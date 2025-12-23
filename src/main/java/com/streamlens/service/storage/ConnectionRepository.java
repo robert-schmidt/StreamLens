@@ -107,7 +107,12 @@ public class ConnectionRepository {
         try (ResultSet rs = databaseService.executeQuery(
                 "SELECT * FROM connections WHERE id = ?", id)) {
             if (rs.next()) {
-                return Optional.of(mapRow(rs));
+                try {
+                    return Optional.of(mapRow(rs));
+                } catch (Exception e) {
+                    log.warn("Cannot decrypt connection '{}' - possibly from different machine", id);
+                    return Optional.empty();
+                }
             }
             return Optional.empty();
         } catch (SQLException e) {
@@ -123,7 +128,12 @@ public class ConnectionRepository {
         try (ResultSet rs = databaseService.executeQuery(
                 "SELECT * FROM connections WHERE name = ?", name)) {
             if (rs.next()) {
-                return Optional.of(mapRow(rs));
+                try {
+                    return Optional.of(mapRow(rs));
+                } catch (Exception e) {
+                    log.warn("Cannot decrypt connection '{}' - possibly from different machine", name);
+                    return Optional.empty();
+                }
             }
             return Optional.empty();
         } catch (SQLException e) {
@@ -134,18 +144,41 @@ public class ConnectionRepository {
 
     /**
      * Returns all connection profiles.
+     * Connections that fail to decrypt (e.g., from different machine) are skipped.
      */
     public List<ConnectionProfile> findAll() {
         List<ConnectionProfile> profiles = new ArrayList<>();
+        List<String> failedIds = new ArrayList<>();
+
         try (ResultSet rs = databaseService.executeQuery(
                 "SELECT * FROM connections ORDER BY name")) {
             while (rs.next()) {
-                profiles.add(mapRow(rs));
+                try {
+                    profiles.add(mapRow(rs));
+                } catch (Exception e) {
+                    String id = rs.getString("id");
+                    String name = rs.getString("name");
+                    log.warn("Skipping connection '{}' - cannot decrypt (possibly from different machine)", name);
+                    failedIds.add(id);
+                }
             }
         } catch (SQLException e) {
             log.error("Failed to list connection profiles", e);
             throw new RuntimeException("Failed to list connection profiles", e);
         }
+
+        // Clean up connections that can't be decrypted on this machine
+        if (!failedIds.isEmpty()) {
+            log.info("Removing {} connection(s) that cannot be decrypted on this machine", failedIds.size());
+            for (String id : failedIds) {
+                try {
+                    databaseService.executeUpdate("DELETE FROM connections WHERE id = ?", id);
+                } catch (Exception e) {
+                    log.error("Failed to remove undecryptable connection: {}", id);
+                }
+            }
+        }
+
         return profiles;
     }
 
