@@ -30,7 +30,7 @@ Download the latest release from the [Releases](https://github.com/robert-schmid
 | File | Platform | Description |
 |------|----------|-------------|
 | `StreamLens-x.x.x.dmg` | macOS | Disk image with bundled JRE |
-| `StreamLens-x.x.x.exe` | Windows | Installer with bundled JRE |
+| `StreamLens-x.x.x.exe` | Windows | Executable (requires Java 21+) |
 | `streamlens-x.x.x.jar` | Any | Executable JAR (requires Java 21+) |
 
 > **macOS First Launch:** The app is not signed with an Apple Developer certificate. Right-click the app and select "Open" to bypass Gatekeeper.
@@ -45,9 +45,13 @@ java -jar streamlens-1.0.0.jar
 
 ## Requirements
 
-### For DMG/EXE Versions
-- macOS 10.14+ (Mojave) or Windows 10+
+### For macOS (DMG)
+- macOS 10.14+ (Mojave or later)
 - No Java installation required (JRE is bundled)
+
+### For Windows (EXE)
+- Windows 10 or later
+- Java 21 or later
 
 ### For JAR Version
 - Java 21 or later
