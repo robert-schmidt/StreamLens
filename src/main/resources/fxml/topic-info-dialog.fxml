@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<DialogPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.streamlens.controller.TopicInfoDialogController"
+            prefWidth="600" prefHeight="500">
+
+    <headerText>Topic Information</headerText>
+
+    <content>
+        <TabPane tabClosingPolicy="UNAVAILABLE">
+            <!-- Overview Tab -->
+            <Tab text="Overview">
+                <VBox spacing="15">
+                    <padding>
+                        <Insets top="15" right="15" bottom="15" left="15"/>
+                    </padding>
+
+                    <GridPane hgap="10" vgap="8">
+                        <Label text="Topic Name:" GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="info-label-bold"/>
+                        <Label fx:id="topicNameLabel" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                        <Label text="Partitions:" GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="info-label-bold"/>
+                        <Label fx:id="partitionCountLabel" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+                        <Label text="Total Messages:" GridPane.columnIndex="0" GridPane.rowIndex="2" styleClass="info-label-bold"/>
+                        <Label fx:id="totalMessagesLabel" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+                        <Label text="Internal:" GridPane.columnIndex="0" GridPane.rowIndex="3" styleClass="info-label-bold"/>
+                        <Label fx:id="internalLabel" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                    </GridPane>
+
+                    <Separator/>
+
+                    <Label text="Partition Details" styleClass="section-header"/>
+                    <TableView fx:id="partitionTable" VBox.vgrow="ALWAYS" prefHeight="200">
+                        <columns>
+                            <TableColumn fx:id="partitionCol" text="Partition" prefWidth="70"/>
+                            <TableColumn fx:id="leaderCol" text="Leader" prefWidth="60"/>
+                            <TableColumn fx:id="replicasCol" text="Replicas" prefWidth="100"/>
+                            <TableColumn fx:id="isrCol" text="ISR" prefWidth="100"/>
+                            <TableColumn fx:id="beginOffsetCol" text="Begin Offset" prefWidth="90"/>
+                            <TableColumn fx:id="endOffsetCol" text="End Offset" prefWidth="90"/>
+                            <TableColumn fx:id="messagesCol" text="Messages" prefWidth="80"/>
+                        </columns>
+                    </TableView>
+                </VBox>
+            </Tab>
+
+            <!-- Configuration Tab -->
+            <Tab text="Configuration">
+                <VBox spacing="10">
+                    <padding>
+                        <Insets top="15" right="15" bottom="15" left="15"/>
+                    </padding>
+
+                    <Label text="Non-default Configuration" styleClass="section-header"/>
+                    <TableView fx:id="configTable" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="configKeyCol" text="Property" prefWidth="250"/>
+                            <TableColumn fx:id="configValueCol" text="Value" prefWidth="300"/>
+                        </columns>
+                    </TableView>
+
+                    <Label fx:id="configHintLabel" text="Only non-default configuration values are shown."
+                           styleClass="hint-label"/>
+                </VBox>
+            </Tab>
+
+            <!-- Consumer Groups Tab -->
+            <Tab text="Consumer Groups">
+                <VBox spacing="10">
+                    <padding>
+                        <Insets top="15" right="15" bottom="15" left="15"/>
+                    </padding>
+
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="Consumer Group:" prefWidth="120"/>
+                        <ComboBox fx:id="consumerGroupCombo" prefWidth="250" HBox.hgrow="ALWAYS"/>
+                        <Button fx:id="refreshGroupsButton" text="Refresh" onAction="#handleRefreshGroups"/>
+                    </HBox>
+
+                    <Separator/>
+
+                    <Label text="Partition Lag" styleClass="section-header"/>
+                    <TableView fx:id="lagTable" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="lagPartitionCol" text="Partition" prefWidth="70"/>
+                            <TableColumn fx:id="currentOffsetCol" text="Current" prefWidth="100"/>
+                            <TableColumn fx:id="endOffsetLagCol" text="End" prefWidth="100"/>
+                            <TableColumn fx:id="lagCol" text="Lag" prefWidth="80"/>
+                        </columns>
+                    </TableView>
+
+                    <HBox spacing="10" alignment="CENTER_RIGHT">
+                        <Label fx:id="totalLagLabel" text="Total Lag: -" styleClass="info-label-bold"/>
+                        <Pane HBox.hgrow="ALWAYS"/>
+                        <Button fx:id="resetToEarliestButton" text="Reset to Earliest" onAction="#handleResetToEarliest"/>
+                        <Button fx:id="resetToLatestButton" text="Reset to Latest" onAction="#handleResetToLatest"/>
+                    </HBox>
+                </VBox>
+            </Tab>
+        </TabPane>
+    </content>
+
+    <buttonTypes>
+        <ButtonType fx:constant="CLOSE"/>
+    </buttonTypes>
+</DialogPane>

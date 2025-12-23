@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<DialogPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.streamlens.controller.LocalKafkaManagerController"
+            prefWidth="700" prefHeight="550">
+
+    <headerText>Local Kafka Server</headerText>
+
+    <content>
+        <VBox spacing="15">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+
+            <!-- Status Card -->
+            <VBox styleClass="card" spacing="10">
+                <padding>
+                    <Insets top="15" right="15" bottom="15" left="15"/>
+                </padding>
+
+                <HBox spacing="15" alignment="CENTER_LEFT">
+                    <VBox spacing="5" HBox.hgrow="ALWAYS">
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <Label text="Status:" styleClass="info-label-bold"/>
+                            <Label fx:id="statusLabel" text="Checking..." styleClass="status-label"/>
+                        </HBox>
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <Label text="Bootstrap Servers:" styleClass="info-label-bold"/>
+                            <Label fx:id="bootstrapLabel" text="localhost:9092"/>
+                            <Button fx:id="copyBootstrapButton" text="Copy" onAction="#handleCopyBootstrap"
+                                    styleClass="small-button"/>
+                        </HBox>
+                    </VBox>
+
+                    <VBox spacing="5" alignment="CENTER_RIGHT">
+                        <HBox spacing="10">
+                            <Button fx:id="startButton" text="Start" onAction="#handleStart"
+                                    prefWidth="80" styleClass="primary-button"/>
+                            <Button fx:id="stopButton" text="Stop" onAction="#handleStop"
+                                    prefWidth="80"/>
+                        </HBox>
+                        <Button fx:id="removeButton" text="Remove Container" onAction="#handleRemove"
+                                styleClass="danger-button"/>
+                    </VBox>
+                </HBox>
+
+                <!-- Resource Stats -->
+                <HBox fx:id="statsPane" spacing="20" alignment="CENTER_LEFT" managed="false" visible="false">
+                    <Separator orientation="HORIZONTAL" HBox.hgrow="ALWAYS"/>
+                </HBox>
+                <HBox fx:id="statsContent" spacing="20" alignment="CENTER_LEFT" managed="false" visible="false">
+                    <HBox spacing="5">
+                        <Label text="Memory:" styleClass="info-label-bold"/>
+                        <Label fx:id="memoryLabel" text="N/A"/>
+                    </HBox>
+                    <HBox spacing="5">
+                        <Label text="CPU:" styleClass="info-label-bold"/>
+                        <Label fx:id="cpuLabel" text="N/A"/>
+                    </HBox>
+                </HBox>
+            </VBox>
+
+            <!-- Docker Warning -->
+            <HBox fx:id="dockerWarningPane" spacing="10" alignment="CENTER_LEFT" styleClass="warning-box"
+                  managed="false" visible="false">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10"/>
+                </padding>
+                <Label text="Docker is not available. Please install Docker Desktop to use local Kafka."
+                       wrapText="true" HBox.hgrow="ALWAYS"/>
+                <Button fx:id="retryDockerButton" text="Retry" onAction="#handleRetryDocker"
+                        styleClass="small-button"/>
+                <Hyperlink fx:id="dockerLink" text="Get Docker" onAction="#handleGetDocker"/>
+            </HBox>
+
+            <!-- Tabs for Management -->
+            <TabPane fx:id="managementTabs" VBox.vgrow="ALWAYS">
+                <!-- Topics Tab -->
+                <Tab text="Topics" closable="false">
+                    <VBox spacing="10">
+                        <padding>
+                            <Insets top="10" right="10" bottom="10" left="10"/>
+                        </padding>
+
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <Button fx:id="refreshTopicsButton" text="Refresh" onAction="#handleRefreshTopics"/>
+                            <Button fx:id="createTopicButton" text="Create Topic" onAction="#handleCreateTopic"/>
+                            <Pane HBox.hgrow="ALWAYS"/>
+                            <TextField fx:id="topicSearchField" promptText="Search topics..." prefWidth="200"/>
+                        </HBox>
+
+                        <StackPane VBox.vgrow="ALWAYS">
+                            <TableView fx:id="topicsTable">
+                                <columns>
+                                    <TableColumn fx:id="topicNameCol" text="Topic Name" prefWidth="250"/>
+                                    <TableColumn fx:id="topicPartitionsCol" text="Partitions" prefWidth="80"/>
+                                    <TableColumn fx:id="topicMessagesCol" text="Messages" prefWidth="100"/>
+                                    <TableColumn fx:id="topicActionsCol" text="Actions" prefWidth="150"/>
+                                </columns>
+                            </TableView>
+                            <VBox fx:id="topicsLoadingPane" alignment="CENTER" spacing="10"
+                                  visible="false" managed="false" styleClass="loading-overlay">
+                                <ProgressIndicator prefWidth="40" prefHeight="40"/>
+                                <Label text="Loading topics..." styleClass="loading-text"/>
+                            </VBox>
+                        </StackPane>
+                    </VBox>
+                </Tab>
+
+                <!-- Consumer Groups Tab -->
+                <Tab text="Consumer Groups" closable="false">
+                    <VBox spacing="10">
+                        <padding>
+                            <Insets top="10" right="10" bottom="10" left="10"/>
+                        </padding>
+
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <Button fx:id="refreshGroupsButton" text="Refresh" onAction="#handleRefreshGroups"/>
+                            <Button fx:id="createGroupButton" text="Create Group" onAction="#handleCreateGroup"/>
+                            <Pane HBox.hgrow="ALWAYS"/>
+                            <TextField fx:id="groupSearchField" promptText="Search groups..." prefWidth="200"/>
+                        </HBox>
+
+                        <StackPane VBox.vgrow="ALWAYS">
+                            <TableView fx:id="groupsTable">
+                                <columns>
+                                    <TableColumn fx:id="groupIdCol" text="Group ID" prefWidth="200"/>
+                                    <TableColumn fx:id="groupStateCol" text="State" prefWidth="100"/>
+                                    <TableColumn fx:id="groupMembersCol" text="Members" prefWidth="80"/>
+                                    <TableColumn fx:id="groupLagCol" text="Total Lag" prefWidth="100"/>
+                                    <TableColumn fx:id="groupActionsCol" text="Actions" prefWidth="150"/>
+                                </columns>
+                            </TableView>
+                            <VBox fx:id="groupsLoadingPane" alignment="CENTER" spacing="10"
+                                  visible="false" managed="false" styleClass="loading-overlay">
+                                <ProgressIndicator prefWidth="40" prefHeight="40"/>
+                                <Label text="Loading consumer groups..." styleClass="loading-text"/>
+                            </VBox>
+                        </StackPane>
+                    </VBox>
+                </Tab>
+
+                <!-- Logs Tab -->
+                <Tab text="Logs" closable="false">
+                    <VBox spacing="10">
+                        <padding>
+                            <Insets top="10" right="10" bottom="10" left="10"/>
+                        </padding>
+
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <Button fx:id="clearLogsButton" text="Clear" onAction="#handleClearLogs"/>
+                            <CheckBox fx:id="autoScrollCheck" text="Auto-scroll" selected="true"/>
+                            <Pane HBox.hgrow="ALWAYS"/>
+                            <Button fx:id="copyLogsButton" text="Copy All" onAction="#handleCopyLogs"/>
+                        </HBox>
+
+                        <TextArea fx:id="logsArea" editable="false" wrapText="true"
+                                  VBox.vgrow="ALWAYS" styleClass="log-area"/>
+                    </VBox>
+                </Tab>
+            </TabPane>
+
+        </VBox>
+    </content>
+
+    <buttonTypes>
+        <ButtonType fx:constant="CLOSE"/>
+    </buttonTypes>
+</DialogPane>

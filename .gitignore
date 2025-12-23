@@ -1,0 +1,119 @@
+# StreamLens .gitignore
+
+# ==================== Build Outputs ====================
+target/
+build/
+out/
+*.jar
+*.war
+*.ear
+*.class
+
+# ==================== IDE Files ====================
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+.idea_modules/
+
+# Eclipse
+.project
+.classpath
+.settings/
+.metadata/
+bin/
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# NetBeans
+nbproject/private/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# ==================== Maven ====================
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# ==================== OS Files ====================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+
+# ==================== Application Data ====================
+# SQLite database (local user data)
+*.db
+*.sqlite
+*.sqlite3
+
+# User config directory
+.streamlens/
+
+# ==================== Logs ====================
+logs/
+*.log
+*.log.*
+
+# ==================== Temporary Files ====================
+*.tmp
+*.temp
+*.swp
+*.swo
+*.bak
+*.orig
+
+# ==================== Packaging ====================
+# Launch4j config (generated)
+launch4j-config.xml
+
+# DMG/installer artifacts
+*.dmg
+*.exe
+*.msi
+*.deb
+*.rpm
+*.pkg
+
+# Icon build artifacts
+*.iconset/
+
+# ==================== Secrets & Credentials ====================
+# Never commit these!
+*.pem
+*.key
+*.p12
+*.jks
+*.keystore
+.env
+.env.*
+credentials.json
+secrets.json
+
+# ==================== Test ====================
+test-output/
+coverage/
+*.exec

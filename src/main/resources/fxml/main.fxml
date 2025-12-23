@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.streamlens.controller.MainController"
+            stylesheets="@../css/streamlens.css">
+
+    <fx:define>
+        <ToggleGroup fx:id="viewToggleGroup"/>
+    </fx:define>
+
+    <!-- Top Toolbar -->
+    <top>
+        <ToolBar fx:id="toolbar" styleClass="main-toolbar">
+            <Button fx:id="connectButton" text="Connect" onAction="#handleConnect" styleClass="toolbar-button">
+                <tooltip><Tooltip text="Load topics from selected connection"/></tooltip>
+            </Button>
+            <Button fx:id="disconnectButton" text="Disconnect" onAction="#handleDisconnect"
+                    styleClass="toolbar-button" disable="true">
+                <tooltip><Tooltip text="Disconnect and stop streaming"/></tooltip>
+            </Button>
+            <Separator orientation="VERTICAL"/>
+            <Button fx:id="startButton" text="Start" onAction="#handleStart"
+                    styleClass="toolbar-button" disable="true">
+                <tooltip><Tooltip text="Start streaming messages (Cmd+R)"/></tooltip>
+            </Button>
+            <Button fx:id="pauseButton" text="Pause" onAction="#handlePause"
+                    styleClass="toolbar-button" disable="true">
+                <tooltip><Tooltip text="Pause streaming (Cmd+P)"/></tooltip>
+            </Button>
+            <Button fx:id="stopButton" text="Stop" onAction="#handleStop"
+                    styleClass="toolbar-button" disable="true">
+                <tooltip><Tooltip text="Stop streaming (Cmd+.)"/></tooltip>
+            </Button>
+            <Separator orientation="VERTICAL"/>
+            <Button fx:id="produceButton" text="Produce" onAction="#handleProduceMessage"
+                    styleClass="toolbar-button" disable="true">
+                <tooltip><Tooltip text="Send a message to the selected topic (Cmd+M)"/></tooltip>
+            </Button>
+            <Separator orientation="VERTICAL"/>
+            <Button fx:id="filterButton" text="Filter" onAction="#handleFilter" styleClass="toolbar-button">
+                <tooltip><Tooltip text="Filter messages (Cmd+F)"/></tooltip>
+            </Button>
+            <Button fx:id="exportButton" text="Export" onAction="#handleExport"
+                    styleClass="toolbar-button" disable="true">
+                <tooltip><Tooltip text="Export messages (Cmd+Shift+E)"/></tooltip>
+            </Button>
+            <Separator orientation="VERTICAL"/>
+            <Button fx:id="localKafkaButton" text="Local Kafka" onAction="#handleLocalKafka"
+                    styleClass="toolbar-button">
+                <tooltip><Tooltip text="Manage local Kafka server (Docker)"/></tooltip>
+            </Button>
+            <Pane HBox.hgrow="ALWAYS"/>
+            <Button fx:id="aboutButton" text="About" onAction="#handleAbout" styleClass="toolbar-button">
+                <tooltip><Tooltip text="About StreamLens"/></tooltip>
+            </Button>
+            <Button fx:id="settingsButton" text="Settings" onAction="#handleSettings" styleClass="toolbar-button">
+                <tooltip><Tooltip text="Open settings (Cmd+,)"/></tooltip>
+            </Button>
+        </ToolBar>
+    </top>
+
+    <!-- Main Content - Split Pane -->
+    <center>
+        <SplitPane fx:id="mainSplitPane" dividerPositions="0.2" styleClass="main-split-pane">
+
+            <!-- Left Panel - Connection Tree -->
+            <VBox styleClass="tree-panel">
+                <padding>
+                    <Insets top="5" right="5" bottom="5" left="5"/>
+                </padding>
+                <HBox spacing="8" alignment="CENTER_LEFT">
+                    <Label text="Connections" styleClass="panel-header"/>
+                    <ProgressIndicator fx:id="connectionLoadingIndicator" prefWidth="16" prefHeight="16"
+                                       visible="false" managed="false"/>
+                </HBox>
+                <TreeView fx:id="connectionTree" VBox.vgrow="ALWAYS" styleClass="connection-tree"/>
+                <HBox spacing="5" alignment="CENTER_LEFT">
+                    <padding>
+                        <Insets top="5"/>
+                    </padding>
+                    <Button fx:id="addConnectionButton" text="+" onAction="#handleAddConnection"
+                            styleClass="small-button" prefWidth="30">
+                        <tooltip><Tooltip text="Add new connection (Cmd+N)"/></tooltip>
+                    </Button>
+                    <Button fx:id="editConnectionButton" text="Edit" onAction="#handleEditConnection"
+                            styleClass="small-button" disable="true">
+                        <tooltip><Tooltip text="Edit selected connection (Cmd+E)"/></tooltip>
+                    </Button>
+                    <Button fx:id="deleteConnectionButton" text="Delete" onAction="#handleDeleteConnection"
+                            styleClass="small-button" disable="true">
+                        <tooltip><Tooltip text="Delete selected connection (Cmd+Del)"/></tooltip>
+                    </Button>
+                </HBox>
+            </VBox>
+
+            <!-- Right Panel - Messages and Inspector -->
+            <SplitPane fx:id="rightSplitPane" orientation="VERTICAL" dividerPositions="0.5">
+
+                <!-- Top - Message List -->
+                <VBox styleClass="messages-panel">
+                    <padding>
+                        <Insets top="5" right="5" bottom="5" left="5"/>
+                    </padding>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="Messages" styleClass="panel-header"/>
+                        <Label fx:id="messageCountLabel" text="(0 messages)" styleClass="message-count"/>
+                        <Pane HBox.hgrow="ALWAYS"/>
+                        <Label fx:id="streamingStatusLabel" text="" styleClass="streaming-status"/>
+                    </HBox>
+                    <!-- Filter Status Bar -->
+                    <HBox fx:id="filterStatusBar" spacing="8" alignment="CENTER_LEFT" managed="false" visible="false"
+                          styleClass="filter-status-bar">
+                        <padding>
+                            <Insets top="5" right="8" bottom="5" left="8"/>
+                        </padding>
+                        <Label text="Filters:" styleClass="filter-status-label"/>
+                        <Label fx:id="filterSummaryLabel" text="" styleClass="filter-summary"/>
+                        <Pane HBox.hgrow="ALWAYS"/>
+                        <Button fx:id="clearFilterButton" text="Clear Filters" onAction="#handleClearFilter"
+                                styleClass="small-button"/>
+                    </HBox>
+                    <TableView fx:id="messageTable" VBox.vgrow="ALWAYS" styleClass="message-table">
+                        <columns>
+                            <TableColumn fx:id="starColumn" text="" prefWidth="30" sortable="false"/>
+                            <TableColumn fx:id="offsetColumn" text="Offset" prefWidth="80"/>
+                            <TableColumn fx:id="partitionColumn" text="Partition" prefWidth="70"/>
+                            <TableColumn fx:id="keyColumn" text="Key" prefWidth="150"/>
+                            <TableColumn fx:id="timestampColumn" text="Timestamp" prefWidth="150"/>
+                            <TableColumn fx:id="previewColumn" text="Preview" prefWidth="300"/>
+                        </columns>
+                        <placeholder>
+                            <Label text="No messages. Select a topic and click Start to stream messages."/>
+                        </placeholder>
+                    </TableView>
+                </VBox>
+
+                <!-- Bottom - Message Inspector -->
+                <VBox styleClass="inspector-panel">
+                    <padding>
+                        <Insets top="5" right="5" bottom="5" left="5"/>
+                    </padding>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="Inspector" styleClass="panel-header"/>
+                        <Pane HBox.hgrow="ALWAYS"/>
+                        <ToggleButton fx:id="jsonViewButton" text="JSON" toggleGroup="$viewToggleGroup"
+                                      selected="true" styleClass="view-toggle">
+                            <tooltip><Tooltip text="Pretty-print JSON (Cmd+1)"/></tooltip>
+                        </ToggleButton>
+                        <ToggleButton fx:id="rawViewButton" text="Raw" toggleGroup="$viewToggleGroup"
+                                      styleClass="view-toggle">
+                            <tooltip><Tooltip text="Raw text view (Cmd+2)"/></tooltip>
+                        </ToggleButton>
+                        <ToggleButton fx:id="hexViewButton" text="Hex" toggleGroup="$viewToggleGroup"
+                                      styleClass="view-toggle">
+                            <tooltip><Tooltip text="Hex dump view (Cmd+3)"/></tooltip>
+                        </ToggleButton>
+                        <Separator orientation="VERTICAL"/>
+                        <Button fx:id="copyButton" text="Copy" onAction="#handleCopy"
+                                styleClass="small-button" disable="true">
+                            <tooltip><Tooltip text="Copy message value (Cmd+C)"/></tooltip>
+                        </Button>
+                        <Button fx:id="saveMessageButton" text="Save" onAction="#handleSaveMessage"
+                                styleClass="small-button" disable="true">
+                            <tooltip><Tooltip text="Save message to database (Cmd+S)"/></tooltip>
+                        </Button>
+                    </HBox>
+                    <SplitPane dividerPositions="0.7" VBox.vgrow="ALWAYS">
+                        <!-- Message Body -->
+                        <TextArea fx:id="messageBody" editable="false" wrapText="true"
+                                  styleClass="message-body" promptText="Select a message to view details"/>
+
+                        <!-- Headers Panel -->
+                        <VBox styleClass="headers-panel">
+                            <Label text="Headers" styleClass="panel-subheader"/>
+                            <TableView fx:id="headersTable" VBox.vgrow="ALWAYS" styleClass="headers-table">
+                                <columns>
+                                    <TableColumn fx:id="headerKeyColumn" text="Key" prefWidth="120"/>
+                                    <TableColumn fx:id="headerValueColumn" text="Value" prefWidth="200"/>
+                                </columns>
+                                <placeholder>
+                                    <Label text="No headers"/>
+                                </placeholder>
+                            </TableView>
+                        </VBox>
+                    </SplitPane>
+                </VBox>
+            </SplitPane>
+        </SplitPane>
+    </center>
+
+    <!-- Bottom Status Bar -->
+    <bottom>
+        <HBox fx:id="statusBar" styleClass="status-bar" spacing="10" alignment="CENTER_LEFT">
+            <padding>
+                <Insets top="5" right="10" bottom="5" left="10"/>
+            </padding>
+            <Label fx:id="statusLabel" text="Ready"/>
+            <Pane HBox.hgrow="ALWAYS"/>
+            <Label fx:id="connectionStatusLabel" text="Not connected"/>
+        </HBox>
+    </bottom>
+</BorderPane>

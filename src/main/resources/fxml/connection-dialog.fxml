@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<DialogPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.streamlens.controller.ConnectionDialogController"
+            prefWidth="550" prefHeight="450">
+
+    <headerText>Connection Settings</headerText>
+
+    <content>
+        <VBox spacing="15">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+
+            <!-- Connection Name -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="Name:" prefWidth="120"/>
+                <TextField fx:id="nameField" promptText="My Connection" HBox.hgrow="ALWAYS"/>
+            </HBox>
+
+            <!-- Connection Type -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="Type:" prefWidth="120"/>
+                <ComboBox fx:id="typeComboBox" prefWidth="200"/>
+            </HBox>
+
+            <Separator/>
+
+            <!-- Kafka Configuration -->
+            <VBox fx:id="kafkaConfigPane" spacing="10">
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Bootstrap Servers:" prefWidth="120"/>
+                    <TextField fx:id="bootstrapServersField" promptText="localhost:9092" HBox.hgrow="ALWAYS"/>
+                </HBox>
+
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Authentication:" prefWidth="120"/>
+                    <ComboBox fx:id="kafkaAuthComboBox" prefWidth="200"/>
+                </HBox>
+
+                <!-- SASL Credentials -->
+                <VBox fx:id="kafkaSaslPane" spacing="10" managed="false" visible="false">
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="Username:" prefWidth="120"/>
+                        <TextField fx:id="kafkaUsernameField" HBox.hgrow="ALWAYS"/>
+                    </HBox>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="Password:" prefWidth="120"/>
+                        <PasswordField fx:id="kafkaPasswordField" HBox.hgrow="ALWAYS"/>
+                    </HBox>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="SASL Mechanism:" prefWidth="120"/>
+                        <ComboBox fx:id="saslMechanismComboBox" prefWidth="200"/>
+                    </HBox>
+                </VBox>
+
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <CheckBox fx:id="kafkaSslCheckBox" text="Enable SSL/TLS"/>
+                </HBox>
+
+                <!-- SSL Configuration -->
+                <VBox fx:id="kafkaSslPane" spacing="10" managed="false" visible="false">
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="Truststore Path:" prefWidth="120"/>
+                        <TextField fx:id="truststorePathField" HBox.hgrow="ALWAYS"/>
+                        <Button text="Browse..." onAction="#handleBrowseTruststore"/>
+                    </HBox>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="Truststore Password:" prefWidth="120"/>
+                        <PasswordField fx:id="truststorePasswordField" HBox.hgrow="ALWAYS"/>
+                    </HBox>
+                </VBox>
+            </VBox>
+
+            <!-- Event Hubs Configuration -->
+            <VBox fx:id="eventHubsConfigPane" spacing="10" managed="false" visible="false">
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Authentication:" prefWidth="120"/>
+                    <ComboBox fx:id="eventHubsAuthComboBox" prefWidth="200"/>
+                </HBox>
+
+                <!-- Connection String -->
+                <VBox fx:id="connectionStringPane" spacing="10">
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="Connection String:" prefWidth="120"/>
+                        <TextArea fx:id="connectionStringField" prefRowCount="3" wrapText="true" HBox.hgrow="ALWAYS"/>
+                    </HBox>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="Event Hub Name:" prefWidth="120"/>
+                        <TextField fx:id="eventHubNameField" promptText="(optional if in connection string)" HBox.hgrow="ALWAYS"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Interactive Browser (Microsoft Entra ID) -->
+                <VBox fx:id="interactiveBrowserPane" spacing="10" managed="false" visible="false">
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="Namespace:" prefWidth="120"/>
+                        <TextField fx:id="namespaceIbField" promptText="mynamespace.servicebus.windows.net" HBox.hgrow="ALWAYS"/>
+                    </HBox>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="Event Hub Name:" prefWidth="120"/>
+                        <TextField fx:id="eventHubNameIbField" HBox.hgrow="ALWAYS"/>
+                    </HBox>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="Tenant ID:" prefWidth="120"/>
+                        <TextField fx:id="tenantIdIbField" promptText="(optional - leave empty for any tenant)" HBox.hgrow="ALWAYS"/>
+                    </HBox>
+                    <Label text="Opens browser for Microsoft login. Tokens are cached locally." styleClass="hint-label"/>
+                </VBox>
+
+                <!-- Service Principal -->
+                <VBox fx:id="servicePrincipalPane" spacing="10" managed="false" visible="false">
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="Namespace:" prefWidth="120"/>
+                        <TextField fx:id="namespaceField" promptText="mynamespace.servicebus.windows.net" HBox.hgrow="ALWAYS"/>
+                    </HBox>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="Event Hub Name:" prefWidth="120"/>
+                        <TextField fx:id="eventHubNameSpField" HBox.hgrow="ALWAYS"/>
+                    </HBox>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="Tenant ID:" prefWidth="120"/>
+                        <TextField fx:id="tenantIdField" HBox.hgrow="ALWAYS"/>
+                    </HBox>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="Client ID:" prefWidth="120"/>
+                        <TextField fx:id="clientIdField" HBox.hgrow="ALWAYS"/>
+                    </HBox>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="Client Secret:" prefWidth="120"/>
+                        <PasswordField fx:id="clientSecretField" HBox.hgrow="ALWAYS"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Managed Identity -->
+                <VBox fx:id="managedIdentityPane" spacing="10" managed="false" visible="false">
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="Namespace:" prefWidth="120"/>
+                        <TextField fx:id="namespaceMiField" promptText="mynamespace.servicebus.windows.net" HBox.hgrow="ALWAYS"/>
+                    </HBox>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="Event Hub Name:" prefWidth="120"/>
+                        <TextField fx:id="eventHubNameMiField" HBox.hgrow="ALWAYS"/>
+                    </HBox>
+                    <Label text="Uses DefaultAzureCredential (System/User Managed Identity)" styleClass="hint-label"/>
+                </VBox>
+
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Consumer Group:" prefWidth="120"/>
+                    <TextField fx:id="consumerGroupField" promptText="Default consumer group" HBox.hgrow="ALWAYS"/>
+                </HBox>
+            </VBox>
+
+            <!-- Test Connection Result -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Button fx:id="testButton" text="Test Connection" onAction="#handleTestConnection"/>
+                <Label fx:id="testResultLabel" text="" styleClass="test-result"/>
+            </HBox>
+        </VBox>
+    </content>
+
+    <buttonTypes>
+        <ButtonType fx:constant="OK"/>
+        <ButtonType fx:constant="CANCEL"/>
+    </buttonTypes>
+</DialogPane>

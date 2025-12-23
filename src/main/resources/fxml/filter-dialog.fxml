@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<DialogPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.streamlens.controller.FilterDialogController"
+            prefWidth="550" prefHeight="520">
+
+    <headerText>Filter Messages</headerText>
+
+    <content>
+        <ScrollPane fitToWidth="true" fitToHeight="true">
+            <VBox spacing="15">
+                <padding>
+                    <Insets top="10" right="15" bottom="10" left="10"/>
+                </padding>
+
+                <!-- Quick Search (always visible) -->
+                <VBox spacing="8" styleClass="filter-section">
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="Quick Search" styleClass="filter-section-header"/>
+                        <Pane HBox.hgrow="ALWAYS"/>
+                        <CheckBox fx:id="quickSearchEnabledCheckBox" text="Enabled" selected="true"/>
+                    </HBox>
+                    <TextField fx:id="quickSearchField" promptText="Search in key and value..."
+                               styleClass="quick-filter" HBox.hgrow="ALWAYS"/>
+                    <Label text="Searches both message keys and values (case-insensitive)" styleClass="hint-label"/>
+                </VBox>
+
+                <!-- Key Filter -->
+                <VBox spacing="8" styleClass="filter-section">
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="Key Filter" styleClass="filter-section-header"/>
+                        <Pane HBox.hgrow="ALWAYS"/>
+                        <CheckBox fx:id="keyFilterEnabledCheckBox" text="Enabled"/>
+                    </HBox>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <TextField fx:id="keyPatternField" promptText="Filter by message key..."
+                                   HBox.hgrow="ALWAYS"/>
+                        <CheckBox fx:id="keyRegexCheckBox" text="Regex"/>
+                    </HBox>
+                </VBox>
+
+                <!-- JSONPath Filter -->
+                <VBox spacing="8" styleClass="filter-section">
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="JSON Body Filter" styleClass="filter-section-header"/>
+                        <Pane HBox.hgrow="ALWAYS"/>
+                        <CheckBox fx:id="jsonPathEnabledCheckBox" text="Enabled"/>
+                    </HBox>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="Path:" prefWidth="50"/>
+                        <TextField fx:id="jsonPathExpressionField" promptText="e.g. $.user.name or $.items[0].id"
+                                   HBox.hgrow="ALWAYS"/>
+                    </HBox>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="Value:" prefWidth="50"/>
+                        <TextField fx:id="jsonPathValueField" promptText="Expected value (optional)"
+                                   HBox.hgrow="ALWAYS"/>
+                    </HBox>
+                    <Label text="Use JSONPath syntax: $.field, $.array[0], $.nested.field" styleClass="hint-label"/>
+                </VBox>
+
+                <!-- Time Range Filter -->
+                <VBox spacing="8" styleClass="filter-section">
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="Time Range" styleClass="filter-section-header"/>
+                        <Pane HBox.hgrow="ALWAYS"/>
+                        <CheckBox fx:id="timeRangeEnabledCheckBox" text="Enabled"/>
+                    </HBox>
+                    <HBox spacing="15" alignment="CENTER_LEFT">
+                        <VBox spacing="5">
+                            <Label text="From:"/>
+                            <HBox spacing="5">
+                                <DatePicker fx:id="startDatePicker" prefWidth="130"/>
+                                <TextField fx:id="startTimeField" promptText="HH:mm" prefWidth="70"/>
+                            </HBox>
+                        </VBox>
+                        <VBox spacing="5">
+                            <Label text="To:"/>
+                            <HBox spacing="5">
+                                <DatePicker fx:id="endDatePicker" prefWidth="130"/>
+                                <TextField fx:id="endTimeField" promptText="HH:mm" prefWidth="70"/>
+                            </HBox>
+                        </VBox>
+                    </HBox>
+                </VBox>
+
+                <Separator/>
+
+                <!-- Presets -->
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Preset:" prefWidth="50"/>
+                    <ComboBox fx:id="presetComboBox" prefWidth="200" promptText="Save/load filter..."/>
+                    <Button fx:id="savePresetButton" text="Save" onAction="#handleSavePreset" styleClass="small-button"/>
+                    <Button fx:id="deletePresetButton" text="Delete" onAction="#handleDeletePreset" styleClass="small-button"/>
+                </HBox>
+
+                <!-- Status -->
+                <Label fx:id="validationLabel" text="" styleClass="validation-label"/>
+
+            </VBox>
+        </ScrollPane>
+    </content>
+
+    <buttonTypes>
+        <ButtonType text="Apply Filter" buttonData="OK_DONE"/>
+        <ButtonType text="Clear All" buttonData="OTHER"/>
+        <ButtonType fx:constant="CANCEL"/>
+    </buttonTypes>
+</DialogPane>

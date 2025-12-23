@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<DialogPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.streamlens.controller.AboutDialogController"
+            prefWidth="550" prefHeight="450"
+            stylesheets="@../css/streamlens.css">
+
+    <header>
+        <HBox alignment="CENTER" spacing="15">
+            <padding>
+                <Insets top="20" right="20" bottom="10" left="20"/>
+            </padding>
+            <ImageView fx:id="appIcon" fitHeight="64" fitWidth="64" preserveRatio="true">
+                <Image url="@../icons/streamlens.png"/>
+            </ImageView>
+            <VBox alignment="CENTER_LEFT" spacing="5">
+                <Label text="StreamLens" styleClass="about-app-name"/>
+                <Label fx:id="versionLabel" text="Version 1.0.0" styleClass="about-version"/>
+            </VBox>
+        </HBox>
+    </header>
+
+    <content>
+        <VBox spacing="15">
+            <padding>
+                <Insets top="10" right="20" bottom="10" left="20"/>
+            </padding>
+
+            <!-- Description -->
+            <Label text="A powerful desktop application for browsing and inspecting Apache Kafka and Azure Event Hubs messages."
+                   wrapText="true" styleClass="about-description"/>
+
+            <Separator/>
+
+            <!-- Build Information -->
+            <VBox spacing="5">
+                <Label text="Build Information" styleClass="about-section-header"/>
+                <GridPane hgap="10" vgap="5">
+                    <Label text="Version:" GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="about-label"/>
+                    <Label fx:id="buildVersionLabel" text="1.0.0" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                    <Label text="Build Date:" GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="about-label"/>
+                    <Label fx:id="buildDateLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+                    <Label text="Java Version:" GridPane.columnIndex="0" GridPane.rowIndex="2" styleClass="about-label"/>
+                    <Label fx:id="javaVersionLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+                    <Label text="JavaFX Version:" GridPane.columnIndex="0" GridPane.rowIndex="3" styleClass="about-label"/>
+                    <Label fx:id="javafxVersionLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                </GridPane>
+            </VBox>
+
+            <Separator/>
+
+            <!-- Links -->
+            <VBox spacing="8">
+                <Label text="Links" styleClass="about-section-header"/>
+                <HBox spacing="15" alignment="CENTER_LEFT">
+                    <Hyperlink fx:id="websiteLink" text="Website" onAction="#handleWebsiteLink"/>
+                    <Hyperlink fx:id="githubLink" text="GitHub" onAction="#handleGitHubLink"/>
+                    <Hyperlink fx:id="coffeeLink" text="Buy Me a Coffee" onAction="#handleCoffeeLink" styleClass="coffee-link"/>
+                </HBox>
+            </VBox>
+
+            <Separator/>
+
+            <!-- Contributing -->
+            <VBox spacing="5">
+                <Label text="Contributing" styleClass="about-section-header"/>
+                <Label text="StreamLens is open source! We welcome contributions from the community."
+                       wrapText="true" styleClass="about-text"/>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <padding>
+                        <Insets top="5"/>
+                    </padding>
+                    <Button text="Report Issue" onAction="#handleReportIssue" styleClass="small-button"/>
+                    <Button text="Open Pull Request" onAction="#handleOpenPR" styleClass="small-button"/>
+                </HBox>
+            </VBox>
+
+            <!-- Copyright -->
+            <VBox alignment="CENTER" spacing="3">
+                <padding>
+                    <Insets top="10"/>
+                </padding>
+                <Label fx:id="copyrightLabel" text="Copyright 2024 Robert Schmidt" styleClass="about-copyright"/>
+                <Label text="Licensed under MIT License" styleClass="about-license"/>
+            </VBox>
+        </VBox>
+    </content>
+
+    <buttonTypes>
+        <ButtonType fx:constant="CLOSE"/>
+    </buttonTypes>
+</DialogPane>

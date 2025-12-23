@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<DialogPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.streamlens.controller.ConsumerGroupDialogController"
+            prefWidth="650" prefHeight="500">
+
+    <headerText>Consumer Group Management</headerText>
+
+    <content>
+        <VBox spacing="15">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+
+            <!-- Group Info -->
+            <HBox spacing="20" alignment="CENTER_LEFT">
+                <VBox spacing="5">
+                    <Label text="Group ID:" styleClass="info-label-bold"/>
+                    <Label fx:id="groupIdLabel" styleClass="info-value"/>
+                </VBox>
+                <VBox spacing="5">
+                    <Label text="State:" styleClass="info-label-bold"/>
+                    <Label fx:id="stateLabel" styleClass="info-value"/>
+                </VBox>
+                <VBox spacing="5">
+                    <Label text="Members:" styleClass="info-label-bold"/>
+                    <Label fx:id="membersLabel" styleClass="info-value"/>
+                </VBox>
+            </HBox>
+
+            <Separator/>
+
+            <!-- Topic Selection -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="Topic:" prefWidth="60"/>
+                <ComboBox fx:id="topicCombo" prefWidth="300" onAction="#handleTopicSelected"/>
+                <Button fx:id="refreshButton" text="Refresh" onAction="#handleRefresh"/>
+            </HBox>
+
+            <!-- Partition Offsets Table -->
+            <Label text="Partition Offsets" styleClass="section-header"/>
+            <TableView fx:id="offsetsTable" VBox.vgrow="ALWAYS" prefHeight="200">
+                <columns>
+                    <TableColumn fx:id="partitionCol" text="Partition" prefWidth="70"/>
+                    <TableColumn fx:id="earliestCol" text="Earliest" prefWidth="90"/>
+                    <TableColumn fx:id="currentCol" text="Current" prefWidth="90"/>
+                    <TableColumn fx:id="latestCol" text="Latest" prefWidth="90"/>
+                    <TableColumn fx:id="lagCol" text="Lag" prefWidth="80"/>
+                    <TableColumn fx:id="newOffsetCol" text="New Offset" prefWidth="120"/>
+                </columns>
+            </TableView>
+
+            <Separator/>
+
+            <!-- Create Group (only for new groups) -->
+            <VBox fx:id="createGroupPane" spacing="10" managed="false" visible="false"
+                  styleClass="create-group-pane">
+                <Label text="Create consumer group with offsets starting at:"/>
+                <HBox spacing="15">
+                    <fx:define>
+                        <ToggleGroup fx:id="startPositionGroup"/>
+                    </fx:define>
+                    <RadioButton fx:id="latestRadio" text="Latest (recommended - skip existing messages)"
+                                 toggleGroup="$startPositionGroup" selected="true"/>
+                    <RadioButton fx:id="earliestRadio" text="Earliest (read all existing messages)"
+                                 toggleGroup="$startPositionGroup"/>
+                </HBox>
+                <Button fx:id="createGroupButton" text="Create Group" onAction="#handleCreateGroup"
+                        styleClass="primary-button"/>
+            </VBox>
+
+            <!-- Reset Options -->
+            <Label fx:id="resetLabel" text="Reset Offsets" styleClass="section-header"/>
+            <HBox fx:id="resetPane" spacing="10" alignment="CENTER_LEFT">
+                <Button fx:id="resetEarliestButton" text="Reset to Earliest" onAction="#handleResetEarliest"/>
+                <Button fx:id="resetLatestButton" text="Reset to Latest" onAction="#handleResetLatest"/>
+                <Button fx:id="resetCustomButton" text="Apply Custom Offsets" onAction="#handleResetCustom"
+                        styleClass="primary-button"/>
+            </HBox>
+
+            <!-- Timestamp Reset -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="Reset to timestamp:" prefWidth="120"/>
+                <DatePicker fx:id="datePicker"/>
+                <TextField fx:id="timeField" promptText="HH:mm:ss" prefWidth="80"/>
+                <Button fx:id="resetTimestampButton" text="Reset to Time" onAction="#handleResetTimestamp"/>
+            </HBox>
+
+            <!-- Status -->
+            <Label fx:id="statusLabel" text="" styleClass="status-message"/>
+
+        </VBox>
+    </content>
+
+    <buttonTypes>
+        <ButtonType fx:constant="CLOSE"/>
+    </buttonTypes>
+</DialogPane>

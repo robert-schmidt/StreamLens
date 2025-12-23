@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<DialogPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.streamlens.controller.ProduceMessageDialogController"
+            prefWidth="700" prefHeight="650">
+
+    <headerText>Produce Messages</headerText>
+
+    <content>
+        <ScrollPane fitToWidth="true" fitToHeight="true">
+            <VBox spacing="12">
+                <padding>
+                    <Insets top="10" right="15" bottom="10" left="10"/>
+                </padding>
+
+                <!-- Topic and Partition Row -->
+                <HBox spacing="20" alignment="CENTER_LEFT">
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="Topic:" styleClass="info-label-bold"/>
+                        <Label fx:id="topicLabel" styleClass="info-value"/>
+                    </HBox>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="Partition:"/>
+                        <ComboBox fx:id="partitionCombo" prefWidth="120"/>
+                        <Label text="(auto)" styleClass="hint-label"/>
+                    </HBox>
+                </HBox>
+
+                <Separator/>
+
+                <!-- Mode Toggle -->
+                <HBox spacing="30" alignment="CENTER_LEFT">
+                    <RadioButton fx:id="singleModeRadio" text="Single Message">
+                        <toggleGroup><ToggleGroup fx:id="modeToggle"/></toggleGroup>
+                    </RadioButton>
+                    <RadioButton fx:id="massModeRadio" text="Mass Produce">
+                        <toggleGroup><fx:reference source="modeToggle"/></toggleGroup>
+                    </RadioButton>
+                </HBox>
+
+                <!-- Mass Produce Options (inline, shown when mass mode selected) -->
+                <HBox fx:id="massOptionsInline" spacing="20" alignment="CENTER_LEFT" managed="false" visible="false"
+                      styleClass="inline-options">
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Label text="Count:"/>
+                        <TextField fx:id="messageCountField" promptText="100" prefWidth="80"/>
+                    </HBox>
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Label text="Delay (ms):"/>
+                        <TextField fx:id="delayField" promptText="0" prefWidth="80"/>
+                    </HBox>
+                    <Label text="Use {{index}}, {{uuid}}, {{timestamp}} as variables" styleClass="hint-label"/>
+                </HBox>
+
+                <Separator/>
+
+                <!-- Key -->
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Key:" prefWidth="80"/>
+                    <TextField fx:id="keyField" promptText="Message key (optional)" HBox.hgrow="ALWAYS"/>
+                </HBox>
+
+                <!-- Value - Main Content Area -->
+                <VBox spacing="5" VBox.vgrow="ALWAYS">
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="Value:" styleClass="info-label-bold"/>
+                        <Pane HBox.hgrow="ALWAYS"/>
+                        <Button fx:id="formatJsonButton" text="Format JSON" onAction="#handleFormatJson" styleClass="small-button"/>
+                    </HBox>
+                    <TextArea fx:id="valueField"
+                              promptText="Enter message body (JSON or plain text)"
+                              wrapText="true" VBox.vgrow="ALWAYS"
+                              prefHeight="250" minHeight="200"
+                              styleClass="code-editor"/>
+                </VBox>
+
+                <!-- Headers (collapsible) -->
+                <TitledPane text="Headers (Optional)" expanded="false" VBox.vgrow="NEVER">
+                    <VBox spacing="10">
+                        <padding>
+                            <Insets top="10" right="10" bottom="10" left="10"/>
+                        </padding>
+                        <TableView fx:id="headersTable" prefHeight="120" maxHeight="120">
+                            <columns>
+                                <TableColumn fx:id="headerKeyCol" text="Key" prefWidth="200"/>
+                                <TableColumn fx:id="headerValueCol" text="Value" prefWidth="350"/>
+                            </columns>
+                            <placeholder><Label text="No headers"/></placeholder>
+                        </TableView>
+                        <HBox spacing="10">
+                            <TextField fx:id="newHeaderKeyField" promptText="Header key" prefWidth="200"/>
+                            <TextField fx:id="newHeaderValueField" promptText="Header value" HBox.hgrow="ALWAYS"/>
+                            <Button text="Add" onAction="#handleAddHeader" styleClass="small-button"/>
+                            <Button text="Remove" onAction="#handleRemoveHeader" styleClass="small-button"/>
+                        </HBox>
+                    </VBox>
+                </TitledPane>
+
+                <!-- Variables Help (only shown in mass mode, collapsible) -->
+                <TitledPane fx:id="massOptionsPane" text="Variable Reference" expanded="false" managed="false" visible="false">
+                    <VBox spacing="8">
+                        <padding>
+                            <Insets top="10" right="10" bottom="10" left="10"/>
+                        </padding>
+                        <Label text="Available variables for key and value:" styleClass="info-label-bold"/>
+                        <TextArea fx:id="variablesHelpArea" editable="false" wrapText="true" prefHeight="120"
+                                  styleClass="help-text"/>
+                    </VBox>
+                </TitledPane>
+
+                <!-- Progress (shown during mass produce) -->
+                <VBox fx:id="progressPane" spacing="5" managed="false" visible="false">
+                    <Separator/>
+                    <ProgressBar fx:id="progressBar" maxWidth="Infinity"/>
+                    <HBox spacing="20">
+                        <Label fx:id="progressLabel" text="Sending..."/>
+                        <Pane HBox.hgrow="ALWAYS"/>
+                        <Label fx:id="rateLabel" text=""/>
+                    </HBox>
+                </VBox>
+
+            </VBox>
+        </ScrollPane>
+    </content>
+
+    <buttonTypes>
+        <ButtonType fx:id="sendButtonType" text="Send" buttonData="OK_DONE"/>
+        <ButtonType fx:constant="CANCEL"/>
+    </buttonTypes>
+</DialogPane>

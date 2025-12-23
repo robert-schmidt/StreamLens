@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<DialogPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.streamlens.controller.StreamingOptionsDialogController"
+            prefWidth="480" prefHeight="500">
+
+    <headerText>Streaming Options</headerText>
+
+    <content>
+        <ScrollPane fitToWidth="true" fitToHeight="true">
+        <VBox spacing="15">
+            <padding>
+                <Insets top="10" right="15" bottom="10" left="10"/>
+            </padding>
+
+            <!-- Topic/Partition Info -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="Topic:" prefWidth="120"/>
+                <Label fx:id="topicLabel" styleClass="info-label"/>
+            </HBox>
+
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="Partition:" prefWidth="120"/>
+                <Label fx:id="partitionLabel" styleClass="info-label"/>
+            </HBox>
+
+            <Separator/>
+
+            <!-- Start Position -->
+            <Label text="Start Position" styleClass="section-header"/>
+
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="Read from:" prefWidth="120"/>
+                <ComboBox fx:id="startPositionCombo" prefWidth="200"/>
+            </HBox>
+
+            <!-- Offset Input (shown for FROM_OFFSET) -->
+            <HBox fx:id="offsetPane" spacing="10" alignment="CENTER_LEFT" managed="false" visible="false">
+                <Label text="Offset:" prefWidth="120"/>
+                <TextField fx:id="offsetField" promptText="Enter offset number" HBox.hgrow="ALWAYS"/>
+            </HBox>
+
+            <!-- Timestamp Input (shown for FROM_TIMESTAMP) -->
+            <VBox fx:id="timestampPane" spacing="10" managed="false" visible="false">
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Date:" prefWidth="120"/>
+                    <DatePicker fx:id="datePicker" HBox.hgrow="ALWAYS"/>
+                </HBox>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Time:" prefWidth="120"/>
+                    <TextField fx:id="timeField" promptText="HH:mm:ss" prefWidth="100"/>
+                </HBox>
+            </VBox>
+
+            <!-- Offset Info (shows current offsets) -->
+            <VBox fx:id="offsetInfoPane" spacing="5">
+                <Label text="Partition Offsets:" styleClass="subsection-header"/>
+                <HBox spacing="20">
+                    <VBox spacing="2">
+                        <Label text="Earliest:" styleClass="offset-label"/>
+                        <Label fx:id="earliestOffsetLabel" text="-" styleClass="offset-value"/>
+                    </VBox>
+                    <VBox spacing="2">
+                        <Label text="Latest:" styleClass="offset-label"/>
+                        <Label fx:id="latestOffsetLabel" text="-" styleClass="offset-value"/>
+                    </VBox>
+                    <VBox spacing="2">
+                        <Label text="Messages:" styleClass="offset-label"/>
+                        <Label fx:id="messageCountLabel" text="-" styleClass="offset-value"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+
+            <Separator/>
+
+            <!-- Consumer Group Options -->
+            <Label text="Consumer Group (Optional)" styleClass="section-header"/>
+
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="Group ID:" prefWidth="120"/>
+                <TextField fx:id="consumerGroupField" promptText="Leave empty for anonymous" HBox.hgrow="ALWAYS"/>
+            </HBox>
+
+            <CheckBox fx:id="commitOffsetsCheckBox" text="Commit offsets to broker"/>
+
+            <Separator/>
+
+            <!-- Message Limit -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="Max messages:" prefWidth="120"/>
+                <TextField fx:id="maxMessagesField" promptText="0 = unlimited" prefWidth="100"/>
+                <Label text="(0 = unlimited)" styleClass="hint-label"/>
+            </HBox>
+
+            <!-- Remember Settings -->
+            <CheckBox fx:id="rememberSettingsCheckBox" text="Remember these settings for this topic">
+                <tooltip><Tooltip text="Pre-fills these options next time you start streaming this topic. To change settings during streaming, stop and restart."/></tooltip>
+            </CheckBox>
+            <Label text="Settings will pre-fill on next start. Stop and restart to change." styleClass="hint-label"/>
+
+        </VBox>
+        </ScrollPane>
+    </content>
+
+    <buttonTypes>
+        <ButtonType fx:constant="OK"/>
+        <ButtonType fx:constant="CANCEL"/>
+    </buttonTypes>
+</DialogPane>
